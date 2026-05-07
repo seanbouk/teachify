@@ -29,11 +29,30 @@ export function renderPlay(root, { entry, onExit }) {
   const questionEl = el('div', { class: 'play-question' });
   const optionsEl = el('div', { class: 'play-options' });
   const progressFill = el('div', { class: 'play-progress-fill' });
+  const progressTrack = el('div', { class: 'play-progress-track' }, progressFill);
+
+  // Milestone pegs — what you're aiming for. Pegs gain a "passed" class
+  // once the learned-pct crosses their threshold.
+  const MILESTONES = [
+    { pct: 25, label: 'F' },
+    { pct: 50, label: 'C' },
+    { pct: 75, label: 'B' },
+    { pct: 95, label: 'A' },
+  ];
+  const pegEls = MILESTONES.map((m) => {
+    const peg = el('div', { class: 'peg' },
+      el('span', { class: 'peg-label' }, m.label),
+      el('span', { class: 'peg-tick' }),
+    );
+    peg.style.left = `${m.pct}%`;
+    return peg;
+  });
+
   const progressBar = el('div', {
     class: 'play-progress',
     role: 'progressbar',
     'aria-label': 'Quiz progress',
-  }, progressFill);
+  }, progressTrack, ...pegEls);
 
   const header = el('header', { class: 'play-header' },
     el('button', {
@@ -68,6 +87,9 @@ export function renderPlay(root, { entry, onExit }) {
     progressFill.style.width = `${pct}%`;
     progressBar.setAttribute('aria-valuenow', String(s.learned));
     progressBar.setAttribute('aria-valuemax', String(s.total));
+    pegEls.forEach((peg, i) => {
+      peg.classList.toggle('passed', pct >= MILESTONES[i].pct);
+    });
   }
 
   function nextQuestion() {

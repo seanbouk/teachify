@@ -337,11 +337,20 @@ button { font: inherit; color: inherit; }
 .play-stats .sep { color: var(--text-subtle); }
 
 .play-progress {
+  position: relative;
+  height: 26px;
+  margin-bottom: clamp(20px, 4vh, 40px);
+}
+
+.play-progress-track {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
   height: 6px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.07);
   border-radius: 999px;
   overflow: hidden;
-  margin-bottom: clamp(20px, 4vh, 40px);
 }
 
 .play-progress-fill {
@@ -350,6 +359,51 @@ button { font: inherit; color: inherit; }
   background: linear-gradient(90deg, var(--primary), var(--accent-1));
   border-radius: inherit;
   transition: width 360ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.peg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.peg-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  color: var(--text-subtle);
+  transition: color var(--t-base), transform var(--t-base);
+}
+
+.peg-tick {
+  margin-top: 2px;
+  width: 2px;
+  flex: 1;
+  background: var(--text-subtle);
+  border-radius: 1px;
+  opacity: 0.55;
+  transition: background var(--t-base), opacity var(--t-base);
+}
+
+.peg.passed .peg-label {
+  color: var(--text);
+  transform: scale(1.12);
+}
+
+.peg.passed .peg-tick {
+  background: var(--primary);
+  opacity: 1;
 }
 
 .play-main {

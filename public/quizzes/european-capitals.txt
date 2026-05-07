@@ -1,6 +1,6 @@
 # Capital Cities of Europe
 
-A practice quiz on European capitals. About 45 countries.
+A practice quiz on European capitals. 47 countries.
 
 Each question lives in a fenced ```q ... ``` block. Inside, the first
 line is the question and the second is the answer. Anything outside
@@ -12,289 +12,289 @@ typo. Without one, progress is keyed off the question text. You can
 also add `#alt: ...` lines to accept alternative spellings.
 
 ```q
-What is the capital of France?
+France 🇫🇷?
 Paris
 #id: france
 ```
 
 ```q
-What is the capital of Spain?
+Spain 🇪🇸?
 Madrid
 #id: spain
 ```
 
 ```q
-What is the capital of Italy?
+Italy 🇮🇹?
 Rome
 #id: italy
 ```
 
 ```q
-What is the capital of Germany?
+Germany 🇩🇪?
 Berlin
 #id: germany
 ```
 
 ```q
-What is the capital of Portugal?
+Portugal 🇵🇹?
 Lisbon
 #id: portugal
 ```
 
 ```q
-What is the capital of the United Kingdom?
+United Kingdom 🇬🇧?
 London
 #id: uk
 ```
 
 ```q
-What is the capital of Ireland?
+Ireland 🇮🇪?
 Dublin
 #id: ireland
 ```
 
 ```q
-What is the capital of the Netherlands?
+Netherlands 🇳🇱?
 Amsterdam
 #id: netherlands
 ```
 
 ```q
-What is the capital of Belgium?
+Belgium 🇧🇪?
 Brussels
 #id: belgium
 ```
 
 ```q
-What is the capital of Luxembourg?
+Luxembourg 🇱🇺?
 Luxembourg
 #id: luxembourg
 ```
 
 ```q
-What is the capital of Switzerland?
+Switzerland 🇨🇭?
 Bern
 #id: switzerland
 #alt: Berne
 ```
 
 ```q
-What is the capital of Austria?
+Austria 🇦🇹?
 Vienna
 #id: austria
 ```
 
 ```q
-What is the capital of Denmark?
+Denmark 🇩🇰?
 Copenhagen
 #id: denmark
 ```
 
 ```q
-What is the capital of Norway?
+Norway 🇳🇴?
 Oslo
 #id: norway
 ```
 
 ```q
-What is the capital of Sweden?
+Sweden 🇸🇪?
 Stockholm
 #id: sweden
 ```
 
 ```q
-What is the capital of Finland?
+Finland 🇫🇮?
 Helsinki
 #id: finland
 ```
 
 ```q
-What is the capital of Iceland?
+Iceland 🇮🇸?
 Reykjavik
 #id: iceland
 #alt: Reykjavík
 ```
 
 ```q
-What is the capital of Poland?
+Poland 🇵🇱?
 Warsaw
 #id: poland
 ```
 
 ```q
-What is the capital of the Czech Republic?
+Czech Republic 🇨🇿?
 Prague
 #id: czech-republic
-#alt: Czechia
 ```
 
 ```q
-What is the capital of Slovakia?
+Slovakia 🇸🇰?
 Bratislava
 #id: slovakia
 ```
 
 ```q
-What is the capital of Hungary?
+Hungary 🇭🇺?
 Budapest
 #id: hungary
 ```
 
 ```q
-What is the capital of Romania?
+Romania 🇷🇴?
 Bucharest
 #id: romania
 ```
 
 ```q
-What is the capital of Bulgaria?
+Bulgaria 🇧🇬?
 Sofia
 #id: bulgaria
 ```
 
 ```q
-What is the capital of Greece?
+Greece 🇬🇷?
 Athens
 #id: greece
 ```
 
 ```q
-What is the capital of Turkey?
+Turkey 🇹🇷?
 Ankara
 #id: turkey
 ```
 
 ```q
-What is the capital of Albania?
+Albania 🇦🇱?
 Tirana
 #id: albania
 ```
 
 ```q
-What is the capital of North Macedonia?
+North Macedonia 🇲🇰?
 Skopje
 #id: north-macedonia
 ```
 
 ```q
-What is the capital of Serbia?
+Serbia 🇷🇸?
 Belgrade
 #id: serbia
 ```
 
 ```q
-What is the capital of Croatia?
+Croatia 🇭🇷?
 Zagreb
 #id: croatia
 ```
 
 ```q
-What is the capital of Slovenia?
+Slovenia 🇸🇮?
 Ljubljana
 #id: slovenia
 ```
 
 ```q
-What is the capital of Bosnia and Herzegovina?
+Bosnia and Herzegovina 🇧🇦?
 Sarajevo
 #id: bosnia
 ```
 
 ```q
-What is the capital of Montenegro?
+Montenegro 🇲🇪?
 Podgorica
 #id: montenegro
 ```
 
 ```q
-What is the capital of Kosovo?
+Kosovo 🇽🇰?
 Pristina
 #id: kosovo
 #alt: Prishtina
 ```
 
 ```q
-What is the capital of Cyprus?
+Cyprus 🇨🇾?
 Nicosia
 #id: cyprus
 ```
 
 ```q
-What is the capital of Malta?
+Malta 🇲🇹?
 Valletta
 #id: malta
 ```
 
 ```q
-What is the capital of Estonia?
+Estonia 🇪🇪?
 Tallinn
 #id: estonia
 ```
 
 ```q
-What is the capital of Latvia?
+Latvia 🇱🇻?
 Riga
 #id: latvia
 ```
 
 ```q
-What is the capital of Lithuania?
+Lithuania 🇱🇹?
 Vilnius
 #id: lithuania
 ```
 
 ```q
-What is the capital of Belarus?
+Belarus 🇧🇾?
 Minsk
 #id: belarus
 ```
 
 ```q
-What is the capital of Ukraine?
+Ukraine 🇺🇦?
 Kyiv
 #id: ukraine
 #alt: Kiev
 ```
 
 ```q
-What is the capital of Moldova?
+Moldova 🇲🇩?
 Chisinau
 #id: moldova
 #alt: Chișinău
 ```
 
 ```q
-What is the capital of Russia?
+Russia 🇷🇺?
 Moscow
 #id: russia
 ```
 
 ```q
-What is the capital of Andorra?
+Andorra 🇦🇩?
 Andorra la Vella
 #id: andorra
 ```
 
 ```q
-What is the capital of Monaco?
+Monaco 🇲🇨?
 Monaco
 #id: monaco
 ```
 
 ```q
-What is the capital of San Marino?
+San Marino 🇸🇲?
 San Marino
 #id: san-marino
 ```
 
 ```q
-What is the capital of Liechtenstein?
+Liechtenstein 🇱🇮?
 Vaduz
 #id: liechtenstein
 ```
 
 ```q
-What is the capital of Vatican City?
+Vatican City 🇻🇦?
 Vatican City
 #id: vatican
 ```
+
