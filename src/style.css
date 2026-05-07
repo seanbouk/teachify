@@ -568,8 +568,9 @@ body.reordering {
   40%, 60% { transform: translateX(5px); }
 }
 
-/* Single floating pill spawned at the clicked button's centre. Drifts
-   upward and fades. Stack freely, one per click. */
+/* Single floating pill spawned at the clicked button's centre. The
+   actual rise/fade is driven by the Web Animations API in play.js, so
+   the keyframes don't live here — only the static appearance. */
 .answer-floater {
   position: fixed;
   z-index: 100;
@@ -583,23 +584,8 @@ body.reordering {
   font-weight: 700;
   white-space: nowrap;
   box-shadow: 0 4px 18px rgba(74, 222, 128, 0.35);
-  animation: floater-rise 950ms cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+  transform: translate(-50%, -50%);
   will-change: transform, opacity;
-}
-
-@keyframes floater-rise {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.94);
-  }
-  12% {
-    opacity: 1;
-    transform: translate(-50%, calc(-50% - 4px)) scale(1.02);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, calc(-50% - 110px)) scale(0.94);
-  }
 }
 
 .play-empty {

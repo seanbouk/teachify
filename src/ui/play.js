@@ -165,14 +165,37 @@ export function renderPlay(root, { entry, onExit, onAnswer }) {
 
 // Spawn a single floating "answer" pill at the centre of the clicked
 // button's rect. Drifts up and fades. They stack freely when the user
-// clicks in rapid succession.
+// clicks in rapid succession. Uses the Web Animations API so the effect
+// runs even if some upstream CSS rule overrides the keyframes.
 function spawnAnswerFloater(sourceBtn) {
   const rect = sourceBtn.getBoundingClientRect();
-  const floater = el('div', { class: 'answer-floater' }, sourceBtn.textContent);
-  floater.style.left = `${rect.left + rect.width / 2}px`;
-  floater.style.top = `${rect.top + rect.height / 2}px`;
-  document.body.appendChild(floater);
-  setTimeout(() => floater.remove(), 1000);
+  if (rect.width === 0 || rect.height === 0) return;
+
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  const f = document.createElement('div');
+  f.className = 'answer-floater';
+  f.textContent = sourceBtn.textContent;
+  f.style.left = `${cx}px`;
+  f.style.top = `${cy}px`;
+  document.body.appendChild(f);
+
+  const anim = f.animate(
+    [
+      { transform: 'translate(-50%, -50%) scale(0.92)', opacity: 0 },
+      { transform: 'translate(-50%, calc(-50% - 6px)) scale(1.04)', opacity: 1, offset: 0.12 },
+      { transform: 'translate(-50%, calc(-50% - 40px)) scale(1)', opacity: 1, offset: 0.45 },
+      { transform: 'translate(-50%, calc(-50% - 110px)) scale(0.94)', opacity: 0 },
+    ],
+    {
+      duration: 950,
+      easing: 'cubic-bezier(0.2, 0.6, 0.3, 1)',
+      fill: 'forwards',
+    },
+  );
+  anim.addEventListener('finish', () => f.remove());
+  anim.addEventListener('cancel', () => f.remove());
 }
 
 function shuffle(arr) {
