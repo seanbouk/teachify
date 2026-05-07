@@ -1,15 +1,29 @@
 import { el, svg, svgEl, clear } from './dom.js';
 import { loadProgress } from '../progress.js';
-import { progressSummary, THRESHOLD } from '../selector.js';
+import { progressSummary } from '../selector.js';
+
+const ACCENT_VARS = [
+  '--accent-1', '--accent-2', '--accent-3', '--accent-4',
+  '--accent-5', '--accent-6', '--accent-7', '--accent-8',
+];
+
+function accentFor(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return `var(${ACCENT_VARS[Math.abs(h) % ACCENT_VARS.length]})`;
+}
 
 export function renderHome(root, { catalog, onPlay, onAdd, onManage }) {
   clear(root);
 
   const wrap = el('div', { class: 'home' },
     el('header', { class: 'home-header' },
-      el('h1', { class: 'home-title' }, 'Teachify'),
+      el('h1', { class: 'home-title' },
+        'Teachify',
+        el('span', { class: 'dot' }, '.'),
+      ),
       el('p', { class: 'home-subtitle' },
-        'A quiet place to learn things by heart. Pick a quiz, or add one of your own.',
+        'Stuff worth learning by heart. Pick a quiz, or bring your own.',
       ),
     ),
     grid(catalog, onPlay, onManage, onAdd),
@@ -50,6 +64,7 @@ function quizCard(entry, onPlay, onManage) {
       }
     },
   });
+  card.style.setProperty('--card-accent', accentFor(entry.id));
 
   const header = el('div', { class: 'card-header' },
     el('h2', { class: 'card-title' }, entry.parsed.title),
@@ -71,7 +86,7 @@ function quizCard(entry, onPlay, onManage) {
   const meta = el('div', { class: 'card-meta' },
     el('span', { class: 'card-progress' }, `${summary.learned} / ${summary.total} learned`),
     summary.pool < summary.total
-      ? el('span', { class: 'card-pool' }, `${summary.pool} in pool`)
+      ? el('span', { class: 'card-pool' }, `${summary.pool} in pool…`)
       : null,
     entry.source === 'user'
       ? el('span', { class: 'badge' }, 'Yours')
@@ -96,8 +111,8 @@ function addCard(onAdd) {
     onclick: onAdd,
   },
     el('div', { class: 'card-add-plus' }, '+'),
-    el('div', { class: 'card-add-label' }, 'Add a quiz'),
-    el('div', { class: 'card-add-hint' }, 'Upload a .txt file you wrote or were sent.'),
+    el('div', { class: 'card-add-label' }, 'Bring your own'),
+    el('div', { class: 'card-add-hint' }, 'Drop in a .txt — yours or one someone sent you.'),
   );
 }
 

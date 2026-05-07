@@ -1,4 +1,4 @@
-import { el, clear, svg, svgEl } from './dom.js';
+import { el, clear } from './dom.js';
 import { loadProgress, saveProgress } from '../progress.js';
 import {
   ensurePool,
@@ -34,7 +34,6 @@ export function renderPlay(root, { entry, onExit }) {
     role: 'progressbar',
     'aria-label': 'Quiz progress',
   }, progressFill);
-  const toastLayer = el('div', { class: 'toast-layer', 'aria-hidden': 'true' });
 
   const header = el('header', { class: 'play-header' },
     el('button', {
@@ -53,7 +52,6 @@ export function renderPlay(root, { entry, onExit }) {
     header,
     progressBar,
     el('main', { class: 'play-main' }, questionEl, optionsEl),
-    toastLayer,
   ));
 
   let currentQid = null;
@@ -64,7 +62,7 @@ export function renderPlay(root, { entry, onExit }) {
     stats.appendChild(el('span', {}, `${s.learned} / ${s.total} learned`));
     if (s.pool < s.total) {
       stats.appendChild(el('span', { class: 'sep' }, '·'));
-      stats.appendChild(el('span', {}, `${s.pool} in pool`));
+      stats.appendChild(el('span', {}, `${s.pool} in pool…`));
     }
     const pct = s.total > 0 ? (s.learned / s.total) * 100 : 0;
     progressFill.style.width = `${pct}%`;
@@ -97,7 +95,8 @@ export function renderPlay(root, { entry, onExit }) {
         const btn = el('button', {
           class: 'option',
           type: 'button',
-          onclick: () => onPick(q, text, btn),
+          onpointerdown: (ev) => onPress(q, text, btn, ev),
+          onclick: (ev) => ev.preventDefault(),
         }, text);
         optionsEl.appendChild(btn);
       }
@@ -113,84 +112,74 @@ export function renderPlay(root, { entry, onExit }) {
     }, TRANSITION_MS);
   }
 
-  function onPick(q, chosenText, chosenBtn) {
+  function onPress(q, chosenText, chosenBtn, ev) {
     const state = optionsEl.dataset.state;
     if (state === 'locked') return;
+    if (chosenBtn.disabled) return;
 
     const isCorrect = chosenText === q.a;
 
-    if (isCorrect) {
-      if (state === 'wrong-shown') {
-        // Already recorded the wrong answer — just advance immediately.
-        optionsEl.dataset.state = 'locked';
-        chosenBtn.classList.add('chosen');
-        nextQuestion();
-        return;
-      }
-      optionsEl.dataset.state = 'locked';
-      chosenBtn.classList.add('correct');
-      recordAnswer(progress, quiz, currentQid, true);
+    if (state === 'awaiting' && !isCorrect) {
+      // First wrong attempt — record it, highlight, wait for them to pick correct.
+      optionsEl.dataset.state = 'wrong-shown';
+      chosenBtn.classList.add('wrong');
+      recordAnswer(progress, quiz, currentQid, false, chosenText);
       saveProgress(progress);
       refreshStats();
-      flashToast(toastLayer, 'correct');
-      nextQuestion();
+      for (const b of optionsEl.querySelectorAll('.option')) {
+        if (b === chosenBtn) continue;
+        if (b.textContent === q.a) {
+          b.classList.add('correct', 'await-click');
+        } else {
+          b.disabled = true;
+          b.classList.add('faded');
+        }
+      }
       return;
     }
 
-    // Wrong pick.
-    if (state !== 'awaiting') return;
-    optionsEl.dataset.state = 'wrong-shown';
-    chosenBtn.classList.add('wrong');
-    recordAnswer(progress, quiz, currentQid, false, chosenText);
-    saveProgress(progress);
-    refreshStats();
-    flashToast(toastLayer, 'wrong');
-
-    for (const b of optionsEl.querySelectorAll('.option')) {
-      if (b === chosenBtn) continue;
-      if (b.textContent === q.a) {
-        b.classList.add('correct', 'await-click');
-      } else {
-        b.disabled = true;
-        b.classList.add('faded');
-      }
+    // Correct pick — first try, or after a wrong reveal.
+    if (state === 'awaiting') {
+      recordAnswer(progress, quiz, currentQid, true);
+      saveProgress(progress);
+      refreshStats();
     }
+    optionsEl.dataset.state = 'locked';
+    spawnWinParticle(chosenBtn);
+    nextQuestion();
+    if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
   }
 
   refreshStats();
   nextQuestion();
 }
 
-function flashToast(layer, kind) {
-  const toast = el('div', { class: `toast toast-${kind}` }, kind === 'correct' ? checkIcon() : crossIcon());
-  layer.appendChild(toast);
-  // Remove after the animation completes so the layer doesn't grow.
-  setTimeout(() => toast.remove(), 700);
-}
-
-function checkIcon() {
-  return svg('0 0 24 24',
-    svgEl('path', {
-      d: 'M5 12.5l4.5 4.5L19 7.5',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '3',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round',
-    }),
-  );
-}
-
-function crossIcon() {
-  return svg('0 0 24 24',
-    svgEl('path', {
-      d: 'M7 7l10 10M17 7L7 17',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '3',
-      'stroke-linecap': 'round',
-    }),
-  );
+// Drop a translucent green ghost of the clicked button at its rect, floating
+// upward and fading out. One particle per correct press — they stack freely
+// when the user clicks rapidly.
+function spawnWinParticle(sourceBtn) {
+  const rect = sourceBtn.getBoundingClientRect();
+  const cs = window.getComputedStyle(sourceBtn);
+  const particle = el('div', { class: 'win-particle' }, sourceBtn.textContent);
+  Object.assign(particle.style, {
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+    width: `${rect.width}px`,
+    height: `${rect.height}px`,
+    paddingTop: cs.paddingTop,
+    paddingRight: cs.paddingRight,
+    paddingBottom: cs.paddingBottom,
+    paddingLeft: cs.paddingLeft,
+    fontSize: cs.fontSize,
+    fontWeight: cs.fontWeight,
+    fontFamily: cs.fontFamily,
+    lineHeight: cs.lineHeight,
+    letterSpacing: cs.letterSpacing,
+    textAlign: cs.textAlign,
+    borderRadius: cs.borderRadius,
+  });
+  document.body.appendChild(particle);
+  setTimeout(() => particle.remove(), 1100);
 }
 
 function shuffle(arr) {
