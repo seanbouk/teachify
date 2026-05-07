@@ -51,11 +51,14 @@ export function renderHome(root, { catalog, onPlay, onAdd, onManage, onReorder }
   const wrap = el('div', { class: 'home' },
     el('header', { class: 'home-header' },
       el('h1', { class: 'home-title' },
-        'Teachify',
+        // Manual kern pair — the system fallback font has no Te kern, so
+        // we tug the e in slightly so the T overlaps it the way it should.
+        el('span', { class: 'kern-t' }, 'T'),
+        'eachify',
         el('span', { class: 'dot' }, '.'),
       ),
       el('p', { class: 'home-subtitle' },
-        'Stuff worth learning by heart. Pick a quiz, or bring your own.',
+        'Stuff worth learning by heart. 🧠 💪 ✨',
       ),
     ),
     gridEl,

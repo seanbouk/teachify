@@ -99,6 +99,10 @@ button { font: inherit; color: inherit; }
   line-height: 1;
 }
 
+.home-title .kern-t {
+  margin-right: -0.06em;
+}
+
 .home-title .dot {
   color: var(--primary);
 }
