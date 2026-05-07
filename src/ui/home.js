@@ -58,7 +58,7 @@ export function renderHome(root, { catalog, onPlay, onAdd, onManage, onReorder }
         el('span', { class: 'dot' }, '.'),
       ),
       el('p', { class: 'home-subtitle' },
-        'Stuff worth learning by heart. 🧠💪🩷',
+        'Stuff worth learning by heart. 🧠💪🩵',
       ),
     ),
     gridEl,
