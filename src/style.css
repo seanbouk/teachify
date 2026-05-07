@@ -495,35 +495,11 @@ body.reordering {
   line-height: 1.3;
   text-align: center;
   padding: 0 8px;
-  transition: opacity 140ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 140ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.play-question.leaving {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-.play-question.entering {
-  opacity: 0;
-  transform: translateY(8px);
 }
 
 .play-options {
   display: grid;
   gap: 12px;
-  transition: opacity 140ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 140ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.play-options.leaving {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.play-options.entering {
-  opacity: 0;
-  transform: translateY(8px);
 }
 
 .option {
@@ -541,23 +517,14 @@ body.reordering {
     border-color var(--t-fast),
     background var(--t-fast),
     color var(--t-fast),
-    transform var(--t-fast),
-    box-shadow var(--t-fast),
     opacity var(--t-fast);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-.option:hover:not(:disabled):not(.faded):not(.correct):not(.wrong) {
-  border-color: var(--primary);
-  background: var(--surface-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.option:active:not(:disabled):not(.faded):not(.correct):not(.wrong) {
-  transform: translateY(0) scale(0.99);
-}
+/* No hover or active styles — there's no concept of "selected" while
+   the user is still aiming at an answer. Only correct/wrong/faded
+   class states actually change appearance. */
 
 .option:focus-visible {
   outline: 2px solid var(--primary);
@@ -601,38 +568,37 @@ body.reordering {
   40%, 60% { transform: translateX(5px); }
 }
 
-/* Floating "win" particle — a translucent green ghost of the clicked
-   button that drifts up and fades out. Stack freely, one per click. */
-.win-particle {
+/* Single floating pill spawned at the clicked button's centre. Drifts
+   upward and fades. Stack freely, one per click. */
+.answer-floater {
   position: fixed;
   z-index: 100;
   pointer-events: none;
-  border: 1.5px solid var(--good-border);
+  padding: 6px 14px;
   background: var(--good-bg);
   color: var(--good);
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
+  border: 1px solid var(--good-border);
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 700;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
-  animation: win-rise 950ms cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+  box-shadow: 0 4px 18px rgba(74, 222, 128, 0.35);
+  animation: floater-rise 950ms cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
   will-change: transform, opacity;
 }
 
-@keyframes win-rise {
+@keyframes floater-rise {
   0% {
     opacity: 0;
-    transform: translateY(0) scale(1);
+    transform: translate(-50%, -50%) scale(0.94);
   }
-  10% {
+  12% {
     opacity: 1;
-    transform: translateY(-4px) scale(1.02);
+    transform: translate(-50%, calc(-50% - 4px)) scale(1.02);
   }
   100% {
     opacity: 0;
-    transform: translateY(-110px) scale(0.92);
+    transform: translate(-50%, calc(-50% - 110px)) scale(0.94);
   }
 }
 

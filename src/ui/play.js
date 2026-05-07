@@ -8,8 +8,6 @@ import {
 } from '../selector.js';
 import { pickDistractors } from '../distractors.js';
 
-const TRANSITION_MS = 140;
-
 export function renderPlay(root, { entry, onExit, onAnswer }) {
   clear(root);
   const quiz = entry.parsed;
@@ -105,35 +103,20 @@ export function renderPlay(root, { entry, onExit, onAnswer }) {
   }
 
   function renderRound(q, options) {
-    questionEl.classList.add('leaving');
-    optionsEl.classList.add('leaving');
+    // Sega-arcade fast: swap content in the same frame, no fade.
+    questionEl.textContent = q.q;
+    clear(optionsEl);
+    optionsEl.dataset.state = 'awaiting';
 
-    setTimeout(() => {
-      questionEl.classList.remove('leaving');
-      optionsEl.classList.remove('leaving');
-      questionEl.textContent = q.q;
-      clear(optionsEl);
-      optionsEl.dataset.state = 'awaiting';
-
-      for (const text of options) {
-        const btn = el('button', {
-          class: 'option',
-          type: 'button',
-          onpointerdown: (ev) => onPress(q, text, btn, ev),
-          onclick: (ev) => ev.preventDefault(),
-        }, text);
-        optionsEl.appendChild(btn);
-      }
-
-      requestAnimationFrame(() => {
-        questionEl.classList.add('entering');
-        optionsEl.classList.add('entering');
-        requestAnimationFrame(() => {
-          questionEl.classList.remove('entering');
-          optionsEl.classList.remove('entering');
-        });
-      });
-    }, TRANSITION_MS);
+    for (const text of options) {
+      const btn = el('button', {
+        class: 'option',
+        type: 'button',
+        onpointerdown: (ev) => onPress(q, text, btn, ev),
+        onclick: (ev) => ev.preventDefault(),
+      }, text);
+      optionsEl.appendChild(btn);
+    }
   }
 
   function onPress(q, chosenText, chosenBtn, ev) {
@@ -171,7 +154,7 @@ export function renderPlay(root, { entry, onExit, onAnswer }) {
       if (onAnswer) onAnswer();
     }
     optionsEl.dataset.state = 'locked';
-    spawnWinParticle(chosenBtn);
+    spawnAnswerFloater(chosenBtn);
     nextQuestion();
     if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
   }
@@ -180,32 +163,16 @@ export function renderPlay(root, { entry, onExit, onAnswer }) {
   nextQuestion();
 }
 
-// Drop a translucent green ghost of the clicked button at its rect, floating
-// upward and fading out. One particle per correct press — they stack freely
-// when the user clicks rapidly.
-function spawnWinParticle(sourceBtn) {
+// Spawn a single floating "answer" pill at the centre of the clicked
+// button's rect. Drifts up and fades. They stack freely when the user
+// clicks in rapid succession.
+function spawnAnswerFloater(sourceBtn) {
   const rect = sourceBtn.getBoundingClientRect();
-  const cs = window.getComputedStyle(sourceBtn);
-  const particle = el('div', { class: 'win-particle' }, sourceBtn.textContent);
-  Object.assign(particle.style, {
-    left: `${rect.left}px`,
-    top: `${rect.top}px`,
-    width: `${rect.width}px`,
-    height: `${rect.height}px`,
-    paddingTop: cs.paddingTop,
-    paddingRight: cs.paddingRight,
-    paddingBottom: cs.paddingBottom,
-    paddingLeft: cs.paddingLeft,
-    fontSize: cs.fontSize,
-    fontWeight: cs.fontWeight,
-    fontFamily: cs.fontFamily,
-    lineHeight: cs.lineHeight,
-    letterSpacing: cs.letterSpacing,
-    textAlign: cs.textAlign,
-    borderRadius: cs.borderRadius,
-  });
-  document.body.appendChild(particle);
-  setTimeout(() => particle.remove(), 1100);
+  const floater = el('div', { class: 'answer-floater' }, sourceBtn.textContent);
+  floater.style.left = `${rect.left + rect.width / 2}px`;
+  floater.style.top = `${rect.top + rect.height / 2}px`;
+  document.body.appendChild(floater);
+  setTimeout(() => floater.remove(), 1000);
 }
 
 function shuffle(arr) {
