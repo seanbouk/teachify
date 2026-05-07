@@ -34,10 +34,12 @@ export function renderPlay(root, { entry, onExit, onAnswer }) {
   // Milestone pegs — what you're aiming for. Pegs gain a "passed" class
   // once the learned-pct crosses their threshold.
   const MILESTONES = [
-    { pct: 25, label: 'F' },
-    { pct: 50, label: 'C' },
-    { pct: 75, label: 'B' },
-    { pct: 95, label: 'A' },
+    { pct: 18, label: 'F' },
+    { pct: 36, label: 'C' },
+    { pct: 54, label: 'B' },
+    { pct: 70, label: 'A' },
+    { pct: 85, label: 'Super' },
+    { pct: 98, label: 'Awesome' },
   ];
   const pegEls = MILESTONES.map((m) => {
     const peg = el('div', { class: 'peg' },

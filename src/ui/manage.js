@@ -4,7 +4,6 @@ import {
   downloadProgress,
   uploadProgress,
   resetProgress,
-  hasDownloadedThisSession,
 } from '../progress.js';
 import {
   downloadQuizText,
@@ -99,15 +98,24 @@ export function openManagePanel({ entry, onClose, onChange }) {
     shareButtons,
   ));
 
-  // Your progress section
+  // Your progress section. Upload AND reset are locked until the user
+  // downloads their progress in this session of the panel — the lock is
+  // panel-local, so opening the panel again starts fresh.
+  let hasDownloaded = false;
+
   const uploadBtn = el('button', {
     class: 'btn',
     type: 'button',
-    disabled: !hasDownloadedThisSession(entry.id),
-    title: hasDownloadedThisSession(entry.id)
-      ? ''
-      : 'Download your progress first to enable upload.',
+    disabled: true,
+    title: 'Download your progress first to enable upload.',
   }, 'Upload progress');
+
+  const resetBtn = el('button', {
+    class: 'btn btn-danger',
+    type: 'button',
+    disabled: true,
+    title: 'Download your progress first to enable reset.',
+  }, 'Reset progress');
 
   const fileInput = el('input', {
     type: 'file',
@@ -133,44 +141,41 @@ export function openManagePanel({ entry, onClose, onChange }) {
     fileInput.click();
   });
 
+  resetBtn.addEventListener('click', () => {
+    if (resetBtn.disabled) return;
+    const ok = window.confirm(
+      `Reset all progress for "${entry.parsed.title}"? This can't be undone.`,
+    );
+    if (!ok) return;
+    resetProgress(entry.id, entry.parsed.title);
+    setStatus('Progress reset.', 'good');
+    if (onChange) onChange();
+  });
+
   const downloadProgressBtn = el('button', {
     class: 'btn',
     type: 'button',
     onclick: () => {
       const progress = loadProgress(entry.id, entry.parsed.title);
       downloadProgress(progress);
+      hasDownloaded = true;
       uploadBtn.disabled = false;
       uploadBtn.removeAttribute('title');
-      setStatus('Progress downloaded. Upload is now enabled this session.', 'good');
+      resetBtn.disabled = false;
+      resetBtn.removeAttribute('title');
+      setStatus('Progress downloaded. Upload and reset are now unlocked.', 'good');
     },
   }, 'Download progress');
 
   panel.appendChild(section(
     'Your progress',
-    'Back up your saved progress, or replace it from a file you downloaded earlier. Upload is locked until you download first this session.',
+    'Back up your progress, replace it from a file you downloaded earlier, or wipe it. Upload and reset are both locked until you download a backup first — that way an accidental click can\'t lose your work.',
     el('div', { class: 'btn-row' },
       downloadProgressBtn,
       uploadBtn,
+      resetBtn,
       fileInput,
     ),
-  ));
-
-  panel.appendChild(section(
-    'Reset',
-    'Wipe your progress for this quiz. The quiz itself stays.',
-    el('button', {
-      class: 'btn btn-danger',
-      type: 'button',
-      onclick: () => {
-        const ok = window.confirm(
-          `Reset all progress for "${entry.parsed.title}"? This can't be undone.`,
-        );
-        if (!ok) return;
-        resetProgress(entry.id, entry.parsed.title);
-        setStatus('Progress reset.', 'good');
-        if (onChange) onChange();
-      },
-    }, 'Reset progress'),
   ));
 
   if (entry.source === 'user') {

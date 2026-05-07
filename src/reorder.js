@@ -4,8 +4,44 @@
 //
 // Strategy: while dragging, the chosen card follows the cursor via
 // transform; on drop, the DOM is reordered in place and the new sequence
-// is reported back via onCommit. Drop indicator highlights the target
-// card so it's clear where the dragged card will land.
+// is reported back via onCommit. A floating drop-indicator line shows
+// the insertion point, coloured to match the dragged card's accent.
+
+let dropIndicator = null;
+
+function ensureIndicator() {
+  if (!dropIndicator) {
+    dropIndicator = document.createElement('div');
+    dropIndicator.className = 'drop-indicator';
+    document.body.appendChild(dropIndicator);
+  }
+  return dropIndicator;
+}
+
+function showIndicator(target, position, accent) {
+  const ind = ensureIndicator();
+  if (accent) ind.style.setProperty('--card-accent', accent);
+  const r = target.getBoundingClientRect();
+  ind.style.top = `${r.top + 6}px`;
+  ind.style.height = `${r.height - 12}px`;
+  if (position === 'before') {
+    ind.style.left = `${r.left - 7}px`;
+  } else {
+    ind.style.left = `${r.right + 3}px`;
+  }
+  ind.classList.add('visible');
+}
+
+function hideIndicator() {
+  if (dropIndicator) dropIndicator.classList.remove('visible');
+}
+
+function tearDownIndicator() {
+  if (dropIndicator) {
+    dropIndicator.remove();
+    dropIndicator = null;
+  }
+}
 
 export function makeReorderable(grid, onCommit) {
   let dragging = null;
@@ -23,15 +59,11 @@ export function makeReorderable(grid, onCommit) {
     return null;
   }
 
-  function clearTargets() {
-    for (const c of getCards()) c.classList.remove('drop-before', 'drop-after');
-  }
-
   function start(handle, card, e) {
     if (e.button !== 0 && e.pointerType === 'mouse') return;
     e.preventDefault();
     e.stopPropagation();
-    try { handle.setPointerCapture(e.pointerId); } catch { /* pointer-capture unsupported */ }
+    try { handle.setPointerCapture(e.pointerId); } catch { /* */ }
 
     dragging = {
       card,
@@ -40,6 +72,7 @@ export function makeReorderable(grid, onCommit) {
       startX: e.clientX,
       startY: e.clientY,
       moved: false,
+      accent: getComputedStyle(card).getPropertyValue('--card-accent').trim() || 'var(--primary)',
     };
     document.body.classList.add('reordering');
   }
@@ -57,12 +90,16 @@ export function makeReorderable(grid, onCommit) {
 
     dragging.card.style.transform = `translate(${dx}px, ${dy}px) scale(1.03)`;
 
-    clearTargets();
     const target = findCardAt(e.clientX, e.clientY, dragging.card);
     if (target) {
       const r = target.getBoundingClientRect();
-      const before = e.clientY < r.top + r.height / 2;
-      target.classList.add(before ? 'drop-before' : 'drop-after');
+      // Decide before/after by whichever edge of target the cursor is closer to.
+      const fromLeft = e.clientX - r.left;
+      const fromRight = r.right - e.clientX;
+      const before = fromLeft <= fromRight;
+      showIndicator(target, before ? 'before' : 'after', dragging.accent);
+    } else {
+      hideIndicator();
     }
   }
 
@@ -75,7 +112,9 @@ export function makeReorderable(grid, onCommit) {
       const target = findCardAt(e.clientX, e.clientY, dragging.card);
       if (target && target !== dragging.card) {
         const r = target.getBoundingClientRect();
-        const before = e.clientY < r.top + r.height / 2;
+        const fromLeft = e.clientX - r.left;
+        const fromRight = r.right - e.clientX;
+        const before = fromLeft <= fromRight;
         if (before) target.parentNode.insertBefore(dragging.card, target);
         else target.parentNode.insertBefore(dragging.card, target.nextSibling);
       }
@@ -83,7 +122,7 @@ export function makeReorderable(grid, onCommit) {
 
     dragging.card.classList.remove('dragging');
     dragging.card.style.transform = '';
-    clearTargets();
+    hideIndicator();
 
     if (dragging.moved) {
       const newOrder = getCards().map((c) => c.dataset.quizId).filter(Boolean);
@@ -98,7 +137,7 @@ export function makeReorderable(grid, onCommit) {
     document.body.classList.remove('reordering');
     dragging.card.classList.remove('dragging');
     dragging.card.style.transform = '';
-    clearTargets();
+    hideIndicator();
     dragging = null;
   }
 
@@ -115,5 +154,5 @@ export function makeReorderable(grid, onCommit) {
     });
   }
 
-  return { attach };
+  return { attach, tearDown: tearDownIndicator };
 }

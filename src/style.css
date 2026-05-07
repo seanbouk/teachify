@@ -225,10 +225,22 @@ body.reordering {
   transition: none;
 }
 
-.card.drop-before,
-.card.drop-after {
-  outline: 2px solid var(--card-accent, var(--primary));
-  outline-offset: 4px;
+/* Floating insertion line shown while dragging — coloured to match the
+   quiz being dragged, sits in the gap between cards. */
+.drop-indicator {
+  position: fixed;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--card-accent, var(--primary));
+  box-shadow: 0 0 0 1px var(--bg), 0 0 14px var(--card-accent, var(--primary));
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  transition: left 100ms ease-out, top 100ms ease-out, height 100ms ease-out, opacity 100ms ease-out;
+}
+
+.drop-indicator.visible {
+  opacity: 1;
 }
 
 .card-desc {
@@ -427,7 +439,6 @@ body.reordering {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 14px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -445,6 +456,7 @@ body.reordering {
   display: flex;
   align-items: center;
   color: var(--text-subtle);
+  white-space: nowrap;
   transition: color var(--t-base), transform var(--t-base);
 }
 

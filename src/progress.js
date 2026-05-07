@@ -13,7 +13,6 @@
 // }
 
 const PROGRESS_KEY = (quizId) => `teachify:progress:${quizId}`;
-const SESSION_DL_KEY = (quizId) => `teachify:downloaded:${quizId}`;
 
 export function defaultProgress(quizId, quizTitle) {
   return {
@@ -69,7 +68,6 @@ export function downloadProgress(progress) {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 0);
-  markDownloaded(progress.quizId);
 }
 
 export async function uploadProgress(quizId, file) {
@@ -91,22 +89,6 @@ export async function uploadProgress(quizId, file) {
   const migrated = migrateProgress(parsed, quizId, parsed.quizTitle);
   saveProgress(migrated);
   return migrated;
-}
-
-export function hasDownloadedThisSession(quizId) {
-  try {
-    return sessionStorage.getItem(SESSION_DL_KEY(quizId)) === '1';
-  } catch {
-    return false;
-  }
-}
-
-export function markDownloaded(quizId) {
-  try {
-    sessionStorage.setItem(SESSION_DL_KEY(quizId), '1');
-  } catch {
-    /* ignore */
-  }
 }
 
 // Bring older/foreign shapes up to current.
