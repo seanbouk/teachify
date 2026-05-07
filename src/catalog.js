@@ -141,8 +141,52 @@ function writeUserIndex(ids) {
   localStorage.setItem(USER_INDEX_KEY, JSON.stringify(ids));
 }
 
+// Markers around the auto-generated header so we can strip + replace
+// it on subsequent shares without growing the file each time.
+const INSTR_OPEN = '<!-- teachify:start -->';
+const INSTR_CLOSE = '<!-- teachify:end -->';
+const STRIP_RE = new RegExp(
+  `^\\s*${escapeRe(INSTR_OPEN)}[\\s\\S]*?${escapeRe(INSTR_CLOSE)}\\s*\\n*`,
+);
+
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Build a human-readable preface explaining where this file came from
+// and what to do with it. The parser ignores everything outside `q`
+// blocks, so it has zero effect on play but is the first thing anyone
+// sees when opening the file.
+export function wrapQuizForSharing(rawText, fromUrl) {
+  const stripped = String(rawText).replace(STRIP_RE, '');
+  const url = fromUrl || (typeof location !== 'undefined'
+    ? location.origin + location.pathname
+    : 'https://teachify.app');
+  const header = `${INSTR_OPEN}
+
+This is a Teachify quiz file.
+
+Got it from: ${url}
+
+To play it:
+  1. Open the link above in any browser.
+  2. On the home screen, tap "Bring your own".
+  3. Pick this .txt file.
+
+Your progress lives on your device only — nothing leaves your browser.
+Anything outside the \`\`\`q ... \`\`\` blocks below (including this header)
+is ignored by the app, so you can edit or delete this section without
+breaking anything.
+
+${INSTR_CLOSE}
+
+`;
+  return header + stripped;
+}
+
 export function downloadQuizText(entry) {
-  const blob = new Blob([entry.raw], { type: 'text/plain;charset=utf-8' });
+  const wrapped = wrapQuizForSharing(entry.raw);
+  const blob = new Blob([wrapped], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -151,4 +195,38 @@ export function downloadQuizText(entry) {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+// Returns true if the Web Share API can share files on this device.
+export function canShareFiles() {
+  return !!(
+    typeof navigator !== 'undefined' &&
+    navigator.canShare &&
+    navigator.share
+  );
+}
+
+// Try to share via the OS share sheet. Falls back to download if the
+// device doesn't support file shares or the user cancels.
+export async function shareQuizText(entry) {
+  const wrapped = wrapQuizForSharing(entry.raw);
+  const filename = `${entry.id}.txt`;
+  if (canShareFiles()) {
+    try {
+      const file = new File([wrapped], filename, { type: 'text/plain' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: entry.parsed.title,
+          text: `Teachify quiz: ${entry.parsed.title}`,
+        });
+        return { method: 'share' };
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') return { method: 'cancelled' };
+      // fall through to download
+    }
+  }
+  downloadQuizText(entry);
+  return { method: 'download' };
 }

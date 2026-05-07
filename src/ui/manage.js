@@ -6,7 +6,12 @@ import {
   resetProgress,
   hasDownloadedThisSession,
 } from '../progress.js';
-import { downloadQuizText, removeUserQuiz } from '../catalog.js';
+import {
+  downloadQuizText,
+  shareQuizText,
+  canShareFiles,
+  removeUserQuiz,
+} from '../catalog.js';
 
 export function openManagePanel({ entry, onClose, onChange }) {
   const overlay = el('div', { class: 'overlay' });
@@ -59,17 +64,39 @@ export function openManagePanel({ entry, onClose, onChange }) {
   ));
 
   // Sections
-  panel.appendChild(section(
-    'Share quiz',
-    'Download the .txt file and send it to whoever you like. They can open it as their own quiz.',
+  const shareCapable = canShareFiles();
+  const shareButtons = el('div', { class: 'btn-row' },
+    shareCapable
+      ? el('button', {
+          class: 'btn btn-primary',
+          type: 'button',
+          onclick: async () => {
+            try {
+              const r = await shareQuizText(entry);
+              if (r.method === 'share') setStatus('Shared.', 'good');
+              else if (r.method === 'download') setStatus('Quiz file downloaded.', 'good');
+            } catch (err) {
+              setStatus((err && err.message) || 'Share failed.', 'error');
+            }
+          },
+        }, 'Share quiz')
+      : null,
     el('button', {
-      class: 'btn',
+      class: shareCapable ? 'btn' : 'btn btn-primary',
       type: 'button',
       onclick: () => {
         downloadQuizText(entry);
         setStatus('Quiz file downloaded.', 'good');
       },
-    }, 'Download quiz file'),
+    }, 'Download .txt'),
+  );
+
+  panel.appendChild(section(
+    'Share quiz',
+    shareCapable
+      ? 'Send this quiz to a friend via WhatsApp, email, or any app on your device. The file includes a friendly note explaining how to open it.'
+      : 'Download the .txt and send it to whoever you like. The file includes a friendly note explaining how to open it.',
+    shareButtons,
   ));
 
   // Your progress section

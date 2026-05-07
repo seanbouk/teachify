@@ -58,18 +58,25 @@ const countries = [
   ['Vatican City', '🇻🇦', 'Vatican City', 'vatican'],
 ];
 
-const header = `# Capital Cities of Europe
+const header = `\`\`\`meta
+title: Capital Cities of Europe
+description: A practice quiz on European capitals. ${countries.length} countries.
+color: cyan
+author: Teachify
+\`\`\`
+
+# Capital Cities of Europe
 
 A practice quiz on European capitals. ${countries.length} countries.
 
-Each question lives in a fenced \`\`\`q ... \`\`\` block. Inside, the first
-line is the question and the second is the answer. Anything outside
-a \`q\` block — including this paragraph — is ignored by the app, so
-you can add notes, sources, or jokes without breaking anything.
+The \`meta\` block above tells Teachify the title, blurb, and accent
+colour. Each question lives in a fenced \`\`\`q ... \`\`\` block — first
+line is the question, second is the answer. Anything outside those
+blocks (including this paragraph) is ignored by the app, so you can
+add notes, sources, or jokes without breaking anything.
 
 Optional \`#id: short-label\` lines keep your progress when you edit a
-typo. Without one, progress is keyed off the question text. You can
-also add \`#alt: ...\` lines to accept alternative spellings.
+typo. \`#alt: ...\` lines accept alternative spellings.
 
 `;
 

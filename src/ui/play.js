@@ -10,7 +10,7 @@ import { pickDistractors } from '../distractors.js';
 
 const TRANSITION_MS = 140;
 
-export function renderPlay(root, { entry, onExit }) {
+export function renderPlay(root, { entry, onExit, onAnswer }) {
   clear(root);
   const quiz = entry.parsed;
   const progress = loadProgress(entry.id, quiz.title);
@@ -148,6 +148,7 @@ export function renderPlay(root, { entry, onExit }) {
       recordAnswer(progress, quiz, currentQid, false, chosenText);
       saveProgress(progress);
       refreshStats();
+      if (onAnswer) onAnswer();
       for (const b of optionsEl.querySelectorAll('.option')) {
         if (b === chosenBtn) continue;
         if (b.textContent === q.a) {
@@ -165,6 +166,7 @@ export function renderPlay(root, { entry, onExit }) {
       recordAnswer(progress, quiz, currentQid, true);
       saveProgress(progress);
       refreshStats();
+      if (onAnswer) onAnswer();
     }
     optionsEl.dataset.state = 'locked';
     spawnWinParticle(chosenBtn);

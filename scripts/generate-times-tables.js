@@ -7,15 +7,23 @@ import { dirname, join } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const out = join(here, '..', 'public', 'quizzes', 'times-tables.txt');
 
-const header = `# Times Tables (1–12)
+const header = `\`\`\`meta
+title: Times Tables (1–12)
+description: The full multiplication table from 1×1 up to 12×12. 144 questions.
+color: orange
+author: Teachify
+\`\`\`
+
+# Times Tables (1–12)
 
 The full multiplication table from 1×1 up to 12×12. 144 questions.
 
-Each question lives inside a fenced \`\`\`q ... \`\`\` block. The first line is
-the question, the second is the answer. Anything outside those blocks —
-including this paragraph — is ignored by the app, so you can edit the
-prose freely. The optional \`#id:\` lines keep your progress when you fix
-a typo. \`#alt:\` lines accept alternative correct answers.
+The \`meta\` block above tells Teachify the title, blurb, and accent
+colour. Each question lives inside a fenced \`\`\`q ... \`\`\` block: first
+line is the question, second is the answer. Anything outside those
+blocks — including this paragraph — is ignored by the app, so you
+can edit the prose freely. Optional \`#id:\` lines keep your progress
+when you fix a typo. \`#alt:\` lines accept alternative correct answers.
 
 `;
 

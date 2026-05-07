@@ -1,5 +1,6 @@
 import './style.css';
 import { loadCatalog, addUserQuiz } from './catalog.js';
+import { applyOrder, saveOrder, promoteQuiz } from './order.js';
 import { renderHome } from './ui/home.js';
 import { renderPlay } from './ui/play.js';
 import { openManagePanel } from './ui/manage.js';
@@ -7,19 +8,37 @@ import { openManagePanel } from './ui/manage.js';
 const root = document.querySelector('#app');
 
 async function showHome() {
-  const catalog = await loadCatalog();
+  const raw = await loadCatalog();
+  const catalog = applyOrder(raw);
   renderHome(root, {
     catalog,
-    onPlay: (entry) => showPlay(entry),
+    onPlay: (entry) => showPlay(entry, catalog),
     onManage: (entry) => {
       openManagePanel({ entry, onChange: showHome });
     },
     onAdd: handleAdd,
+    onReorder: (newOrder) => {
+      saveOrder(newOrder);
+      // No re-render — the DOM is already in the new order from the drag.
+    },
   });
 }
 
-function showPlay(entry) {
-  renderPlay(root, { entry, onExit: showHome });
+function showPlay(entry, catalog) {
+  let pinned = false;
+  renderPlay(root, {
+    entry,
+    onAnswer: () => {
+      if (pinned) return;
+      pinned = true;
+      // Pop this quiz to the top once the user has answered at least one
+      // question this session. Seed with the existing on-screen order so
+      // we don't collapse the rest into catalog default.
+      const knownIds = (catalog || []).map((e) => e.id);
+      promoteQuiz(entry.id, knownIds);
+    },
+    onExit: showHome,
+  });
 }
 
 async function handleAdd() {

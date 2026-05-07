@@ -1,20 +1,52 @@
 import { el, svg, svgEl, clear } from './dom.js';
 import { loadProgress } from '../progress.js';
 import { progressSummary } from '../selector.js';
+import { makeReorderable } from '../reorder.js';
 
 const ACCENT_VARS = [
   '--accent-1', '--accent-2', '--accent-3', '--accent-4',
   '--accent-5', '--accent-6', '--accent-7', '--accent-8',
 ];
 
-function accentFor(id) {
+// Named colours an author can put in a `meta` block as `color: cyan`.
+// All resolve to one of the --accent-N CSS variables.
+const NAMED_COLORS = {
+  cyan: '--accent-1',
+  pink: '--accent-2',
+  mint: '--accent-3',
+  green: '--accent-3',
+  purple: '--accent-4',
+  violet: '--accent-4',
+  orange: '--accent-5',
+  rose: '--accent-6',
+  red: '--accent-6',
+  yellow: '--accent-7',
+  amber: '--accent-7',
+  sky: '--accent-8',
+  blue: '--accent-8',
+};
+
+function accentFor(entry) {
+  const meta = entry.parsed && entry.parsed.meta;
+  const wanted = meta && meta.color && String(meta.color).trim().toLowerCase();
+  if (wanted) {
+    if (NAMED_COLORS[wanted]) return `var(${NAMED_COLORS[wanted]})`;
+    if (/^#[0-9a-f]{3}([0-9a-f]{3})?$/i.test(wanted)) return wanted;
+  }
+  // Fallback: deterministic pick from accent palette by hashing the id.
   let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  for (let i = 0; i < entry.id.length; i++) h = (h * 31 + entry.id.charCodeAt(i)) | 0;
   return `var(${ACCENT_VARS[Math.abs(h) % ACCENT_VARS.length]})`;
 }
 
-export function renderHome(root, { catalog, onPlay, onAdd, onManage }) {
+export function renderHome(root, { catalog, onPlay, onAdd, onManage, onReorder }) {
   clear(root);
+
+  const gridEl = el('div', { class: 'grid' });
+  for (const entry of catalog) {
+    gridEl.appendChild(quizCard(entry, onPlay, onManage));
+  }
+  gridEl.appendChild(addCard(onAdd));
 
   const wrap = el('div', { class: 'home' },
     el('header', { class: 'home-header' },
@@ -26,19 +58,18 @@ export function renderHome(root, { catalog, onPlay, onAdd, onManage }) {
         'Stuff worth learning by heart. Pick a quiz, or bring your own.',
       ),
     ),
-    grid(catalog, onPlay, onManage, onAdd),
+    gridEl,
   );
 
   root.appendChild(wrap);
-}
 
-function grid(catalog, onPlay, onManage, onAdd) {
-  const g = el('div', { class: 'grid' });
-  for (const entry of catalog) {
-    g.appendChild(quizCard(entry, onPlay, onManage));
+  // Wire up drag-to-reorder for the cards (skip the add-card).
+  if (onReorder) {
+    const reorder = makeReorderable(gridEl, onReorder);
+    for (const card of gridEl.querySelectorAll('.card[data-quiz-id]')) {
+      reorder.attach(card);
+    }
   }
-  g.appendChild(addCard(onAdd));
-  return g;
 }
 
 function quizCard(entry, onPlay, onManage) {
@@ -48,6 +79,7 @@ function quizCard(entry, onPlay, onManage) {
 
   const onActivate = (ev) => {
     if (ev.target.closest('.manage-btn')) return;
+    if (ev.target.closest('.drag-handle')) return;
     onPlay(entry);
   };
 
@@ -55,6 +87,7 @@ function quizCard(entry, onPlay, onManage) {
     class: 'card',
     tabindex: '0',
     role: 'button',
+    'data-quiz-id': entry.id,
     'aria-label': `Play ${entry.parsed.title}`,
     onclick: onActivate,
     onkeydown: (e) => {
@@ -64,9 +97,15 @@ function quizCard(entry, onPlay, onManage) {
       }
     },
   });
-  card.style.setProperty('--card-accent', accentFor(entry.id));
+  card.style.setProperty('--card-accent', accentFor(entry));
 
   const header = el('div', { class: 'card-header' },
+    el('button', {
+      class: 'drag-handle',
+      type: 'button',
+      'aria-label': `Reorder ${entry.parsed.title}`,
+      title: 'Drag to reorder',
+    }, gripIcon()),
     el('h2', { class: 'card-title' }, entry.parsed.title),
     el('button', {
       class: 'manage-btn',
@@ -113,6 +152,17 @@ function addCard(onAdd) {
     el('div', { class: 'card-add-plus' }, '+'),
     el('div', { class: 'card-add-label' }, 'Bring your own'),
     el('div', { class: 'card-add-hint' }, 'Drop in a .txt — yours or one someone sent you.'),
+  );
+}
+
+function gripIcon() {
+  return svg('0 0 16 16',
+    svgEl('circle', { cx: '5.5', cy: '4', r: '1.2', fill: 'currentColor' }),
+    svgEl('circle', { cx: '10.5', cy: '4', r: '1.2', fill: 'currentColor' }),
+    svgEl('circle', { cx: '5.5', cy: '8', r: '1.2', fill: 'currentColor' }),
+    svgEl('circle', { cx: '10.5', cy: '8', r: '1.2', fill: 'currentColor' }),
+    svgEl('circle', { cx: '5.5', cy: '12', r: '1.2', fill: 'currentColor' }),
+    svgEl('circle', { cx: '10.5', cy: '12', r: '1.2', fill: 'currentColor' }),
   );
 }
 

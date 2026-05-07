@@ -1,169 +1,176 @@
+```meta
+title: NATO Phonetic Alphabet
+description: The 26 callsigns used by aviation, military, and emergency services to spell letters unambiguously over radio.
+color: sky
+author: Teachify
+```
+
 # NATO Phonetic Alphabet
 
 The 26 callsigns used by aviation, military, and emergency services
 to spell letters unambiguously over radio.
 
-Each question is in a fenced ```q ... ``` block. Anything outside
-those blocks (including this paragraph) is ignored by the app, so
-feel free to add notes or trivia anywhere. The optional `#id:` lines
-keep your progress when you edit a typo.
+The block above tells Teachify the title, blurb, and accent colour.
+You can edit them freely. Each question is in a fenced ```q ... ```
+block — anything outside those blocks (including this paragraph) is
+ignored by the app, so feel free to add notes or trivia anywhere.
 
 ```q
-What is the NATO callsign for the letter A?
+A
 Alfa
 #id: a
 #alt: Alpha
 ```
 
 ```q
-What is the NATO callsign for the letter B?
+B
 Bravo
 #id: b
 ```
 
 ```q
-What is the NATO callsign for the letter C?
+C
 Charlie
 #id: c
 ```
 
 ```q
-What is the NATO callsign for the letter D?
+D
 Delta
 #id: d
 ```
 
 ```q
-What is the NATO callsign for the letter E?
+E
 Echo
 #id: e
 ```
 
 ```q
-What is the NATO callsign for the letter F?
+F
 Foxtrot
 #id: f
 ```
 
 ```q
-What is the NATO callsign for the letter G?
+G
 Golf
 #id: g
 ```
 
 ```q
-What is the NATO callsign for the letter H?
+H
 Hotel
 #id: h
 ```
 
 ```q
-What is the NATO callsign for the letter I?
+I
 India
 #id: i
 ```
 
 ```q
-What is the NATO callsign for the letter J?
+J
 Juliett
 #id: j
 #alt: Juliet
 ```
 
 ```q
-What is the NATO callsign for the letter K?
+K
 Kilo
 #id: k
 ```
 
 ```q
-What is the NATO callsign for the letter L?
+L
 Lima
 #id: l
 ```
 
 ```q
-What is the NATO callsign for the letter M?
+M
 Mike
 #id: m
 ```
 
 ```q
-What is the NATO callsign for the letter N?
+N
 November
 #id: n
 ```
 
 ```q
-What is the NATO callsign for the letter O?
+O
 Oscar
 #id: o
 ```
 
 ```q
-What is the NATO callsign for the letter P?
+P
 Papa
 #id: p
 ```
 
 ```q
-What is the NATO callsign for the letter Q?
+Q
 Quebec
 #id: q
 ```
 
 ```q
-What is the NATO callsign for the letter R?
+R
 Romeo
 #id: r
 ```
 
 ```q
-What is the NATO callsign for the letter S?
+S
 Sierra
 #id: s
 ```
 
 ```q
-What is the NATO callsign for the letter T?
+T
 Tango
 #id: t
 ```
 
 ```q
-What is the NATO callsign for the letter U?
+U
 Uniform
 #id: u
 ```
 
 ```q
-What is the NATO callsign for the letter V?
+V
 Victor
 #id: v
 ```
 
 ```q
-What is the NATO callsign for the letter W?
+W
 Whiskey
 #id: w
 #alt: Whisky
 ```
 
 ```q
-What is the NATO callsign for the letter X?
+X
 X-ray
 #id: x
 #alt: Xray
 ```
 
 ```q
-What is the NATO callsign for the letter Y?
+Y
 Yankee
 #id: y
 ```
 
 ```q
-What is the NATO callsign for the letter Z?
+Z
 Zulu
 #id: z
 ```

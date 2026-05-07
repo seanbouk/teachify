@@ -1,14 +1,22 @@
+```meta
+title: Henry VIII's Wives
+description: The six wives of Henry VIII, in order, with their fates. Mnemonic — divorced, beheaded, died, divorced, beheaded, survived.
+color: rose
+author: Teachify
+```
+
 # Henry VIII's Wives
 
 The six wives of King Henry VIII of England, in order. The classic
 mnemonic for their fates is "divorced, beheaded, died, divorced,
 beheaded, survived."
 
-This file is plain Markdown. Each question lives inside a fenced
-```q ... ``` block. The first line is the question, the second is the
-answer. Anything outside those blocks is ignored — feel free to edit
-this paragraph, add notes, or paste in your own trivia. The optional
-`#id:` lines keep your progress when you fix a typo.
+The `meta` block at the top tells Teachify the title, blurb, and
+accent colour. Each question lives inside a fenced ```q ... ``` block.
+The first line is the question, the second is the answer. Anything
+outside those blocks is ignored — edit this paragraph, add notes, or
+paste in your own trivia. Optional `#id:` lines keep your progress
+when you fix a typo.
 
 ## Names in order
 
