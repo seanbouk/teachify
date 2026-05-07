@@ -1,4 +1,4 @@
-import { el, clear } from './dom.js';
+import { el, clear, svg, svgEl } from './dom.js';
 import { loadProgress, saveProgress } from '../progress.js';
 import {
   ensurePool,
@@ -8,9 +8,7 @@ import {
 } from '../selector.js';
 import { pickDistractors } from '../distractors.js';
 
-const TRANSITION_MS = 160;
-const RIGHT_DELAY_MS = 320;
-const WRONG_TO_CORRECT_DELAY_MS = 180;
+const TRANSITION_MS = 140;
 
 export function renderPlay(root, { entry, onExit }) {
   clear(root);
@@ -30,6 +28,13 @@ export function renderPlay(root, { entry, onExit }) {
   const stats = el('div', { class: 'play-stats' });
   const questionEl = el('div', { class: 'play-question' });
   const optionsEl = el('div', { class: 'play-options' });
+  const progressFill = el('div', { class: 'play-progress-fill' });
+  const progressBar = el('div', {
+    class: 'play-progress',
+    role: 'progressbar',
+    'aria-label': 'Quiz progress',
+  }, progressFill);
+  const toastLayer = el('div', { class: 'toast-layer', 'aria-hidden': 'true' });
 
   const header = el('header', { class: 'play-header' },
     el('button', {
@@ -46,7 +51,9 @@ export function renderPlay(root, { entry, onExit }) {
 
   root.appendChild(el('div', { class: 'play' },
     header,
+    progressBar,
     el('main', { class: 'play-main' }, questionEl, optionsEl),
+    toastLayer,
   ));
 
   let currentQid = null;
@@ -59,6 +66,10 @@ export function renderPlay(root, { entry, onExit }) {
       stats.appendChild(el('span', { class: 'sep' }, '·'));
       stats.appendChild(el('span', {}, `${s.pool} in pool`));
     }
+    const pct = s.total > 0 ? (s.learned / s.total) * 100 : 0;
+    progressFill.style.width = `${pct}%`;
+    progressBar.setAttribute('aria-valuenow', String(s.learned));
+    progressBar.setAttribute('aria-valuemax', String(s.total));
   }
 
   function nextQuestion() {
@@ -110,11 +121,10 @@ export function renderPlay(root, { entry, onExit }) {
 
     if (isCorrect) {
       if (state === 'wrong-shown') {
-        // User clicked the correct one after a wrong attempt — answer was
-        // already recorded; just move on.
+        // Already recorded the wrong answer — just advance immediately.
         optionsEl.dataset.state = 'locked';
         chosenBtn.classList.add('chosen');
-        setTimeout(nextQuestion, WRONG_TO_CORRECT_DELAY_MS);
+        nextQuestion();
         return;
       }
       optionsEl.dataset.state = 'locked';
@@ -122,7 +132,8 @@ export function renderPlay(root, { entry, onExit }) {
       recordAnswer(progress, quiz, currentQid, true);
       saveProgress(progress);
       refreshStats();
-      setTimeout(nextQuestion, RIGHT_DELAY_MS);
+      flashToast(toastLayer, 'correct');
+      nextQuestion();
       return;
     }
 
@@ -133,6 +144,7 @@ export function renderPlay(root, { entry, onExit }) {
     recordAnswer(progress, quiz, currentQid, false, chosenText);
     saveProgress(progress);
     refreshStats();
+    flashToast(toastLayer, 'wrong');
 
     for (const b of optionsEl.querySelectorAll('.option')) {
       if (b === chosenBtn) continue;
@@ -147,6 +159,38 @@ export function renderPlay(root, { entry, onExit }) {
 
   refreshStats();
   nextQuestion();
+}
+
+function flashToast(layer, kind) {
+  const toast = el('div', { class: `toast toast-${kind}` }, kind === 'correct' ? checkIcon() : crossIcon());
+  layer.appendChild(toast);
+  // Remove after the animation completes so the layer doesn't grow.
+  setTimeout(() => toast.remove(), 700);
+}
+
+function checkIcon() {
+  return svg('0 0 24 24',
+    svgEl('path', {
+      d: 'M5 12.5l4.5 4.5L19 7.5',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '3',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+    }),
+  );
+}
+
+function crossIcon() {
+  return svg('0 0 24 24',
+    svgEl('path', {
+      d: 'M7 7l10 10M17 7L7 17',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '3',
+      'stroke-linecap': 'round',
+    }),
+  );
 }
 
 function shuffle(arr) {
