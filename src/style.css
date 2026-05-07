@@ -100,7 +100,8 @@ button { font: inherit; color: inherit; }
 }
 
 .home-title .kern-t {
-  margin-right: -0.06em;
+  margin-right: -0.09em;
+  color: var(--accent-2);
 }
 
 .home-title .dot {
