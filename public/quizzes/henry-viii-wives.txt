@@ -1,0 +1,139 @@
+# Henry VIII's Wives
+
+The six wives of King Henry VIII of England, in order. The classic
+mnemonic for their fates is "divorced, beheaded, died, divorced,
+beheaded, survived."
+
+This file is plain Markdown. Each question lives inside a fenced
+```q ... ``` block. The first line is the question, the second is the
+answer. Anything outside those blocks is ignored — feel free to edit
+this paragraph, add notes, or paste in your own trivia. The optional
+`#id:` lines keep your progress when you fix a typo.
+
+## Names in order
+
+```q
+Who was Henry VIII's first wife?
+Catherine of Aragon
+#id: wife-1
+```
+
+```q
+Who was Henry VIII's second wife?
+Anne Boleyn
+#id: wife-2
+```
+
+```q
+Who was Henry VIII's third wife?
+Jane Seymour
+#id: wife-3
+```
+
+```q
+Who was Henry VIII's fourth wife?
+Anne of Cleves
+#id: wife-4
+```
+
+```q
+Who was Henry VIII's fifth wife?
+Catherine Howard
+#id: wife-5
+#alt: Kathryn Howard
+```
+
+```q
+Who was Henry VIII's sixth wife?
+Catherine Parr
+#id: wife-6
+#alt: Katherine Parr
+```
+
+## Fates
+
+```q
+What was the fate of Catherine of Aragon?
+Divorced
+#id: fate-1
+#alt: Annulled
+```
+
+```q
+What was the fate of Anne Boleyn?
+Beheaded
+#id: fate-2
+#alt: Executed
+```
+
+```q
+What was the fate of Jane Seymour?
+Died
+#id: fate-3
+#alt: Died in childbirth
+```
+
+```q
+What was the fate of Anne of Cleves?
+Divorced
+#id: fate-4
+#alt: Annulled
+```
+
+```q
+What was the fate of Catherine Howard?
+Beheaded
+#id: fate-5
+#alt: Executed
+```
+
+```q
+What was the fate of Catherine Parr?
+Survived
+#id: fate-6
+#alt: Outlived him
+```
+
+## Position by name
+
+```q
+Which wife of Henry VIII was Catherine of Aragon? (first, second, ...)
+First
+#id: pos-aragon
+#alt: 1st
+```
+
+```q
+Which wife of Henry VIII was Anne Boleyn? (first, second, ...)
+Second
+#id: pos-boleyn
+#alt: 2nd
+```
+
+```q
+Which wife of Henry VIII was Jane Seymour? (first, second, ...)
+Third
+#id: pos-seymour
+#alt: 3rd
+```
+
+```q
+Which wife of Henry VIII was Anne of Cleves? (first, second, ...)
+Fourth
+#id: pos-cleves
+#alt: 4th
+```
+
+```q
+Which wife of Henry VIII was Catherine Howard? (first, second, ...)
+Fifth
+#id: pos-howard
+#alt: 5th
+```
+
+```q
+Which wife of Henry VIII was Catherine Parr? (first, second, ...)
+Sixth
+#id: pos-parr
+#alt: 6th
+```

@@ -1,0 +1,300 @@
+# Capital Cities of Europe
+
+A practice quiz on European capitals. About 45 countries.
+
+Each question lives in a fenced ```q ... ``` block. Inside, the first
+line is the question and the second is the answer. Anything outside
+a `q` block — including this paragraph — is ignored by the app, so
+you can add notes, sources, or jokes without breaking anything.
+
+Optional `#id: short-label` lines keep your progress when you edit a
+typo. Without one, progress is keyed off the question text. You can
+also add `#alt: ...` lines to accept alternative spellings.
+
+```q
+What is the capital of France?
+Paris
+#id: france
+```
+
+```q
+What is the capital of Spain?
+Madrid
+#id: spain
+```
+
+```q
+What is the capital of Italy?
+Rome
+#id: italy
+```
+
+```q
+What is the capital of Germany?
+Berlin
+#id: germany
+```
+
+```q
+What is the capital of Portugal?
+Lisbon
+#id: portugal
+```
+
+```q
+What is the capital of the United Kingdom?
+London
+#id: uk
+```
+
+```q
+What is the capital of Ireland?
+Dublin
+#id: ireland
+```
+
+```q
+What is the capital of the Netherlands?
+Amsterdam
+#id: netherlands
+```
+
+```q
+What is the capital of Belgium?
+Brussels
+#id: belgium
+```
+
+```q
+What is the capital of Luxembourg?
+Luxembourg
+#id: luxembourg
+```
+
+```q
+What is the capital of Switzerland?
+Bern
+#id: switzerland
+#alt: Berne
+```
+
+```q
+What is the capital of Austria?
+Vienna
+#id: austria
+```
+
+```q
+What is the capital of Denmark?
+Copenhagen
+#id: denmark
+```
+
+```q
+What is the capital of Norway?
+Oslo
+#id: norway
+```
+
+```q
+What is the capital of Sweden?
+Stockholm
+#id: sweden
+```
+
+```q
+What is the capital of Finland?
+Helsinki
+#id: finland
+```
+
+```q
+What is the capital of Iceland?
+Reykjavik
+#id: iceland
+#alt: Reykjavík
+```
+
+```q
+What is the capital of Poland?
+Warsaw
+#id: poland
+```
+
+```q
+What is the capital of the Czech Republic?
+Prague
+#id: czech-republic
+#alt: Czechia
+```
+
+```q
+What is the capital of Slovakia?
+Bratislava
+#id: slovakia
+```
+
+```q
+What is the capital of Hungary?
+Budapest
+#id: hungary
+```
+
+```q
+What is the capital of Romania?
+Bucharest
+#id: romania
+```
+
+```q
+What is the capital of Bulgaria?
+Sofia
+#id: bulgaria
+```
+
+```q
+What is the capital of Greece?
+Athens
+#id: greece
+```
+
+```q
+What is the capital of Turkey?
+Ankara
+#id: turkey
+```
+
+```q
+What is the capital of Albania?
+Tirana
+#id: albania
+```
+
+```q
+What is the capital of North Macedonia?
+Skopje
+#id: north-macedonia
+```
+
+```q
+What is the capital of Serbia?
+Belgrade
+#id: serbia
+```
+
+```q
+What is the capital of Croatia?
+Zagreb
+#id: croatia
+```
+
+```q
+What is the capital of Slovenia?
+Ljubljana
+#id: slovenia
+```
+
+```q
+What is the capital of Bosnia and Herzegovina?
+Sarajevo
+#id: bosnia
+```
+
+```q
+What is the capital of Montenegro?
+Podgorica
+#id: montenegro
+```
+
+```q
+What is the capital of Kosovo?
+Pristina
+#id: kosovo
+#alt: Prishtina
+```
+
+```q
+What is the capital of Cyprus?
+Nicosia
+#id: cyprus
+```
+
+```q
+What is the capital of Malta?
+Valletta
+#id: malta
+```
+
+```q
+What is the capital of Estonia?
+Tallinn
+#id: estonia
+```
+
+```q
+What is the capital of Latvia?
+Riga
+#id: latvia
+```
+
+```q
+What is the capital of Lithuania?
+Vilnius
+#id: lithuania
+```
+
+```q
+What is the capital of Belarus?
+Minsk
+#id: belarus
+```
+
+```q
+What is the capital of Ukraine?
+Kyiv
+#id: ukraine
+#alt: Kiev
+```
+
+```q
+What is the capital of Moldova?
+Chisinau
+#id: moldova
+#alt: Chișinău
+```
+
+```q
+What is the capital of Russia?
+Moscow
+#id: russia
+```
+
+```q
+What is the capital of Andorra?
+Andorra la Vella
+#id: andorra
+```
+
+```q
+What is the capital of Monaco?
+Monaco
+#id: monaco
+```
+
+```q
+What is the capital of San Marino?
+San Marino
+#id: san-marino
+```
+
+```q
+What is the capital of Liechtenstein?
+Vaduz
+#id: liechtenstein
+```
+
+```q
+What is the capital of Vatican City?
+Vatican City
+#id: vatican
+```
